@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #MISE description="Benchmark stdin formatting across representative CMake files."
-#MISE depends=["build-wasm"]
+#MISE depends=["build"]
 
 set -euo pipefail
 

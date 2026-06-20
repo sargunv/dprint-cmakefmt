@@ -9,8 +9,8 @@ Documentation, release, and publishing work is intentionally out of scope here.
       `default-features = false`.
 - [x] Keep crate output as raw dprint Wasm: `cdylib` targeting
       `wasm32-unknown-unknown`.
-- [x] Ensure release Wasm builds via `mise run build-wasm`.
-- [x] Ensure release Wasm validates via `mise run validate-wasm`.
+- [x] Ensure release Wasm builds via `mise run build`.
+- [x] Ensure release Wasm validates via `mise run validate`.
 - [x] Inspect Wasm imports and confirm they are only expected dprint/core
       imports.
 

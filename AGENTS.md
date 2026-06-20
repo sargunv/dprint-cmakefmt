@@ -14,8 +14,8 @@ Rust dprint plugin for formatting CMake files with cmakefmt.
 
 - `mise run check`: run repository checks through hk.
 - `mise run fix`: run auto-fixes through hk.
-- `mise run build-wasm`: build the release Wasm plugin artifact.
-- `mise run validate-wasm`: build and validate the release Wasm artifact.
+- `mise run build`: build the release Wasm plugin artifact.
+- `mise run validate`: build and validate the release Wasm artifact.
 
 Use `mise tasks ls --all` for the full task list.
 

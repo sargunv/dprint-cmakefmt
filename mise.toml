@@ -38,18 +38,18 @@ run = "hk check --all"
 description = "Run repository auto-fixes through hk."
 run = "hk fix --all"
 
-[tasks.build-wasm]
+[tasks.build]
 description = "Build the release dprint plugin Wasm."
 run = "cargo build --release --target wasm32-unknown-unknown"
 
-[tasks.validate-wasm]
+[tasks.validate]
 description = "Build and validate the release dprint plugin Wasm."
-depends = ["build-wasm"]
+depends = ["build"]
 run = "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
 
 [tasks.test]
 description = "Run dprint plugin integration tests."
-depends = ["validate-wasm"]
+depends = ["validate"]
 run = "bats tests"
 
 [tasks.hygiene]
