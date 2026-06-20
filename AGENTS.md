@@ -5,10 +5,11 @@ Rust dprint plugin for formatting CMake files with cmakefmt.
 ## Project Map
 
 - `src/lib.rs`: dprint Wasm plugin wrapper around the cmakefmt library API.
-- `VISION.md`: project vision, design constraints, risks, and milestones.
 - `mise.toml`: pinned toolchain and common tasks.
 - `hk.pkl`: check/fix orchestration.
 - `dprint.jsonc`: repository formatting configuration.
+- `scripts/fetch_cmakefmt.sh`: fetch and patch cmakefmt-rust source.
+- `support/patches/`: local patches applied to fetched third-party source.
 
 ## Dev Tool Commands
 
