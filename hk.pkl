@@ -16,6 +16,10 @@ local lintSteps = new Mapping<String, Step> {
     glob = List("**/*.rs", "Cargo.toml", "Cargo.lock")
     check = "cargo check --target wasm32-unknown-unknown"
   }
+  ["bats"] {
+    glob = List("tests/**/*.bats", "Cargo.toml", "Cargo.lock", "src/**/*.rs")
+    check = "mise run test"
+  }
 }
 
 hooks {
@@ -30,4 +34,3 @@ hooks {
     steps { ...lintSteps }
   }
 }
-

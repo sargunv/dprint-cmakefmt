@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#MISE description="Benchmark stdin formatting across representative CMake files."
+#MISE depends=["build-wasm"]
+
+set -euo pipefail
+
+plugin_path="$PWD/target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
+dprint_path="$(command -v dprint)"
+cmakefmt_manifest="$PWD/vendor/cmakefmt-rust/Cargo.toml"
+cmakefmt_native="$PWD/vendor/cmakefmt-rust/target/release/cmakefmt"
+
+file_limit="${BENCH_FILE_LIMIT:-100}"
+warmup="${BENCH_WARMUP:-1}"
+runs="${BENCH_RUNS:-3}"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+cargo build --quiet --release --manifest-path "$cmakefmt_manifest" --bin cmakefmt
+
+file_list="$tmp_dir/files.txt"
+config_path="$tmp_dir/dprint.json"
+fixture_dir="$tmp_dir/fixtures"
+mkdir -p "$fixture_dir"
+
+for index in $(seq 1 "$file_limit"); do
+  cat > "$fixture_dir/CMakeLists-$index.txt" <<CMAKE
+cmake_minimum_required(VERSION 3.24)
+project(Bench$index)
+add_executable(bench_$index src/main.cpp src/util.cpp src/platform.cpp)
+target_link_libraries(bench_$index PRIVATE alpha beta gamma delta epsilon zeta)
+CMAKE
+done
+
+find "$fixture_dir" -type f | sort > "$file_list"
+
+cat > "$config_path" <<JSON
+{
+  "plugins": ["$plugin_path"],
+  "cmakefmt": {}
+}
+JSON
+
+export DPRINT_BENCH_FILE_LIST="$file_list"
+export DPRINT_BENCH_CONFIG="$config_path"
+export DPRINT_BENCH_DPRINT="$dprint_path"
+export DPRINT_BENCH_CMAKEFMT="$cmakefmt_native"
+
+native_command='while IFS= read -r file; do "$DPRINT_BENCH_CMAKEFMT" < "$file" > /dev/null; done < "$DPRINT_BENCH_FILE_LIST"'
+dprint_command='while IFS= read -r file; do "$DPRINT_BENCH_DPRINT" fmt --stdin "$file" --config "$DPRINT_BENCH_CONFIG" --config-discovery=false < "$file" > /dev/null; done < "$DPRINT_BENCH_FILE_LIST"'
+
+echo "Benchmarking stdin formatting over $file_limit generated CMake files."
+echo "Set BENCH_FILE_LIMIT, BENCH_RUNS, or BENCH_WARMUP to adjust rounds."
+
+hyperfine \
+  --warmup "$warmup" \
+  --runs "$runs" \
+  --command-name "native cmakefmt" "$native_command" \
+  --command-name "dprint wasm plugin" "$dprint_command"

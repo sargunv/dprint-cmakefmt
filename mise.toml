@@ -7,7 +7,9 @@ lockfile = true
 [tools]
 "aqua:jdx/hk" = "1.48.0"
 "aqua:apple/pkl" = "0.31.1"
+"aqua:bats-core/bats-core" = "1.13.0"
 "aqua:dprint/dprint" = "0.54.0"
+"aqua:sharkdp/hyperfine" = "1.20.0"
 "core:rust" = { version = "1.96.0", profile = "minimal", components = "rustfmt,clippy" }
 "aqua:bytecodealliance/wasm-tools" = "1.239.0"
 
@@ -23,6 +25,10 @@ run = "cargo build --release --target wasm32-unknown-unknown"
 [tasks.validate-wasm]
 depends = ["build-wasm"]
 run = "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
+
+[tasks.test]
+depends = ["validate-wasm"]
+run = "bats tests"
 
 [hooks]
 postinstall = ["hk install --mise"]
