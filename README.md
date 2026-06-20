@@ -55,8 +55,8 @@ set explicitly:
 ## Limitations
 
 This plugin does not read cmakefmt config files. Put formatter options in dprint
-config instead of relying on `.cmakefmt.yaml`, `.cmakefmt.toml`, or related
-discovery.
+config instead of relying on `.cmakefmt.yaml`, `.cmakefmt.yml`, or
+`.cmakefmt.toml`.
 
 Range formatting is not currently supported.
 
