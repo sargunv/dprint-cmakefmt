@@ -8,17 +8,9 @@ local lintSteps = new Mapping<String, Step> {
     check = "cargo clippy -- -D warnings"
     fix = "cargo clippy --fix --allow-dirty --allow-staged"
   }
-  ["cargo-test"] {
-    glob = List("**/*.rs", "Cargo.toml", "Cargo.lock")
-    check = "cargo test"
-  }
   ["cargo-check-wasm"] {
     glob = List("**/*.rs", "Cargo.toml", "Cargo.lock")
     check = "cargo check --target wasm32-unknown-unknown"
-  }
-  ["bats"] {
-    glob = List("tests/**/*.bats", "Cargo.toml", "Cargo.lock", "src/**/*.rs")
-    check = "mise run test"
   }
 }
 

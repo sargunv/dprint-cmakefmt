@@ -43,18 +43,17 @@ description = "Build the release dprint plugin Wasm."
 run = "cargo build --release --target wasm32-unknown-unknown"
 
 [tasks.validate]
-description = "Build and validate the release dprint plugin Wasm."
+description = "Build, validate, and test the release dprint plugin Wasm."
 depends = ["build"]
-run = "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
-
-[tasks.test]
-description = "Run dprint plugin integration tests."
-depends = ["validate"]
-run = "bats tests"
+run = [
+  "cargo test",
+  "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm",
+  "bats tests",
+]
 
 [tasks.hygiene]
-description = "Validate mise tasks and run repository checks."
-run = "mise tasks validate && hk check --all"
+description = "Run repository auto-fixes and fail if they changed files."
+run = "mise run fix && git diff --exit-code"
 
 [hooks]
 postinstall = ["hk install --mise"]
