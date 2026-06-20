@@ -51,6 +51,27 @@ format_stdin_with_dprint() {
   [[ "$output" == *'"useTabs": true'* ]]
 }
 
+@test "dprint CLI reports CMake file extensions and names" {
+  config_path="$BATS_TEST_TMPDIR/dprint.json"
+  project_dir="$BATS_TEST_TMPDIR/project"
+  mkdir -p "$project_dir/Modules" "$project_dir/cmake"
+  touch \
+    "$project_dir/CMakeLists.txt" \
+    "$project_dir/CMakeLists.txt.in" \
+    "$project_dir/Modules/FindThing.cmake" \
+    "$project_dir/cmake/not-cmake.txt"
+  write_config "$config_path" '
+  "cmakefmt": {}'
+
+  run dprint output-file-paths --config "$config_path" --config-discovery=false "$project_dir"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"CMakeLists.txt"* ]]
+  [[ "$output" == *"CMakeLists.txt.in"* ]]
+  [[ "$output" == *"Modules/FindThing.cmake"* ]]
+  [[ "$output" != *"cmake/not-cmake.txt"* ]]
+}
+
 @test "dprint CLI lets cmakefmt config override globals" {
   config_path="$BATS_TEST_TMPDIR/dprint.json"
   write_config "$config_path" '

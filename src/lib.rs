@@ -250,7 +250,10 @@ impl SyncPluginHandler<ResolvedConfig> for CMakeFmtPlugin {
         PluginResolveConfigurationResult {
             file_matching: FileMatchingInfo {
                 file_extensions: vec!["cmake".to_string()],
-                file_names: vec!["CMakeLists.txt".to_string()],
+                file_names: vec![
+                    "CMakeLists.txt".to_string(),
+                    "CMakeLists.txt.in".to_string(),
+                ],
             },
             diagnostics,
             config: resolved_config,
@@ -418,7 +421,10 @@ mod tests {
         let result = plugin.resolve_config(ConfigKeyMap::new(), &GlobalConfiguration::default());
 
         assert_eq!(result.file_matching.file_extensions, vec!["cmake"]);
-        assert_eq!(result.file_matching.file_names, vec!["CMakeLists.txt"]);
+        assert_eq!(
+            result.file_matching.file_names,
+            vec!["CMakeLists.txt", "CMakeLists.txt.in"]
+        );
     }
 
     #[test]
