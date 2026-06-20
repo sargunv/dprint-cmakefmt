@@ -1,0 +1,28 @@
+[settings]
+experimental = true
+pin = true
+install_before = "3d"
+lockfile = true
+
+[tools]
+"aqua:jdx/hk" = "1.48.0"
+"aqua:apple/pkl" = "0.31.1"
+"aqua:dprint/dprint" = "0.54.0"
+"core:rust" = { version = "1.96.0", profile = "minimal", components = "rustfmt,clippy" }
+"aqua:bytecodealliance/wasm-tools" = "1.239.0"
+
+[tasks.check]
+run = "hk check --all"
+
+[tasks.fix]
+run = "hk fix --all"
+
+[tasks.build-wasm]
+run = "cargo build --release --target wasm32-unknown-unknown"
+
+[tasks.validate-wasm]
+depends = ["build-wasm"]
+run = "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
+
+[hooks]
+postinstall = ["hk install --mise"]
