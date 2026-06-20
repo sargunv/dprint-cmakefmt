@@ -17,7 +17,7 @@ serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
 
 [patch.crates-io]
-cmakefmt-rust = { path = "vendor/cmakefmt-rust" }
+cmakefmt-rust = { path = "third_party/cmakefmt-rust-1.6.0" }
 
 [profile.release]
 codegen-units = 1

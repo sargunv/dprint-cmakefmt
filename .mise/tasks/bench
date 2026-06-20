@@ -6,8 +6,8 @@ set -euo pipefail
 
 plugin_path="$PWD/target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
 dprint_path="$(command -v dprint)"
-cmakefmt_manifest="$PWD/vendor/cmakefmt-rust/Cargo.toml"
-cmakefmt_native="$PWD/vendor/cmakefmt-rust/target/release/cmakefmt"
+cmakefmt_manifest="$PWD/third_party/cmakefmt-rust-1.6.0/Cargo.toml"
+cmakefmt_native="$PWD/third_party/cmakefmt-rust-1.6.0/target/release/cmakefmt"
 
 file_limit="${BENCH_FILE_LIMIT:-100}"
 warmup="${BENCH_WARMUP:-1}"

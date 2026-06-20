@@ -1,0 +1,49 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -59,6 +59,7 @@
+ ]
+ 
+ [features]
++browser-wasm = ["wasm-bindgen"]
+ cli = [
+     "lsp",
+     "clap",
+@@ -215,6 +216,7 @@
+ 
+ [target.'cfg(target_arch = "wasm32")'.dependencies.wasm-bindgen]
+ version = "0.2"
++optional = true
+ 
+ [profile.release]
+ lto = true
+--- a/src/config/file.rs
++++ b/src/config/file.rs
+@@ -656,6 +656,7 @@
+     /// Parse a YAML config string and also return a serialized `commands:`
+     /// override block for registry merging when present.
+     #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
++    #[allow(dead_code)]
+     pub(crate) fn from_yaml_str_with_commands(yaml: &str) -> Result<(Self, Option<Box<str>>)> {
+         let parsed = parse_yaml_config(yaml)?;
+         Ok((parsed.config, parsed.commands_yaml))
+@@ -788,6 +789,7 @@
+ #[derive(Debug, Clone)]
+ pub(crate) struct ParsedYamlConfig {
+     pub(crate) config: Config,
++    #[allow(dead_code)]
+     pub(crate) commands_yaml: Option<Box<str>>,
+ }
+ 
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -96,8 +96,8 @@
+ pub mod lsp;
+ 
+ // WASM entry point — only compiled for wasm32 targets.
+-#[cfg(target_arch = "wasm32")]
+-#[cfg_attr(docsrs, doc(cfg(target_arch = "wasm32")))]
++#[cfg(all(target_arch = "wasm32", feature = "browser-wasm"))]
++#[cfg_attr(docsrs, doc(cfg(all(target_arch = "wasm32", feature = "browser-wasm"))))]
+ pub mod wasm;
+ 
+ // ── Configuration ────────────────────────────────────────────────────────────

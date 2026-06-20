@@ -1,5 +1,3 @@
 /target/
 /.mise.local.toml
-
-# Vendored dependency local build output
-/vendor/cmakefmt-rust/target/
+/third_party/
