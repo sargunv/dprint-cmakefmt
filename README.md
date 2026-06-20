@@ -54,24 +54,17 @@ set explicitly:
 
 ## Limitations
 
-Filesystem-dependent cmakefmt configuration discovery is unsupported in the Wasm
-sandbox. Put formatter options in dprint config instead of relying on
-`.cmakefmt.yaml`, `.cmakefmt.toml`, or related discovery.
+This plugin does not read cmakefmt config files. Put formatter options in dprint
+config instead of relying on `.cmakefmt.yaml`, `.cmakefmt.toml`, or related
+discovery.
 
 Range formatting is not currently supported.
 
-## How it works
+## Patch
 
-The plugin wraps the Rust `cmakefmt-rust` library API in a dprint plugin ABI v4
-WebAssembly module. It is built for `wasm32-unknown-unknown` as a raw dprint
-plugin, not a browser Wasm package.
-
-Runtime formatting stays in memory: dprint supplies file text, path metadata,
-and resolved configuration; the plugin calls `cmakefmt::format_source`.
-
-We patch `cmakefmt-rust` locally to gate its browser `wasm-bindgen` entry point
-behind an explicit feature, so the raw dprint plugin artifact does not import
-browser glue.
+We patch `cmakefmt-rust` to gate its browser `wasm-bindgen` entry point behind
+an explicit feature, so the raw dprint plugin artifact does not import browser
+glue.
 
 ## Performance
 
