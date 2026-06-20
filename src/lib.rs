@@ -261,11 +261,11 @@ impl SyncPluginHandler<ResolvedConfig> for CMakeFmtPlugin {
     }
 
     fn plugin_info(&mut self) -> PluginInfo {
-        let version = env!("CARGO_PKG_VERSION");
+        let version = plugin_version();
 
         PluginInfo {
             name: env!("CARGO_PKG_NAME").to_string(),
-            version: version.to_string(),
+            version: version.clone(),
             config_key: "cmakefmt".to_string(),
             help_url: env!("CARGO_PKG_REPOSITORY").to_string(),
             config_schema_url: format!(
@@ -326,6 +326,35 @@ impl SyncPluginHandler<ResolvedConfig> for CMakeFmtPlugin {
             Ok(Some(formatted.into_bytes()))
         }
     }
+}
+
+fn plugin_version() -> String {
+    match option_env!("GITHUB_REF_NAME") {
+        Some(tag) if is_bare_semver(tag) => tag.to_string(),
+        _ => env!("CARGO_PKG_VERSION").to_string(),
+    }
+}
+
+fn is_bare_semver(value: &str) -> bool {
+    let mut parts = value.split('.');
+
+    let Some(major) = parts.next() else {
+        return false;
+    };
+    let Some(minor) = parts.next() else {
+        return false;
+    };
+    let Some(patch) = parts.next() else {
+        return false;
+    };
+
+    parts.next().is_none()
+        && !major.is_empty()
+        && !minor.is_empty()
+        && !patch.is_empty()
+        && major.chars().all(|ch| ch.is_ascii_digit())
+        && minor.chars().all(|ch| ch.is_ascii_digit())
+        && patch.chars().all(|ch| ch.is_ascii_digit())
 }
 
 fn apply_config_value<T>(
@@ -408,21 +437,33 @@ mod tests {
     fn plugin_info_uses_cmakefmt_config_key() {
         let mut plugin = CMakeFmtPlugin;
         let info = plugin.plugin_info();
+        let version = plugin_version();
 
         assert_eq!(info.name, "dprint-cmakefmt");
         assert_eq!(info.config_key, "cmakefmt");
-        assert_eq!(info.version, env!("CARGO_PKG_VERSION"));
+        assert_eq!(info.version, version);
         assert_eq!(
             info.config_schema_url,
             format!(
                 "https://plugins.dprint.dev/sargunv/dprint-cmakefmt/{}/schema.json",
-                env!("CARGO_PKG_VERSION")
+                plugin_version()
             )
         );
         assert_eq!(
             info.update_url.as_deref(),
             Some("https://plugins.dprint.dev/sargunv/dprint-cmakefmt/latest.json")
         );
+    }
+
+    #[test]
+    fn validates_bare_semver_release_tags() {
+        assert!(is_bare_semver("1.2.3"));
+        assert!(is_bare_semver("0.0.0"));
+        assert!(!is_bare_semver("v1.2.3"));
+        assert!(!is_bare_semver("1.2.3-beta.1"));
+        assert!(!is_bare_semver("1.2"));
+        assert!(!is_bare_semver("1.2.3.4"));
+        assert!(!is_bare_semver("1.2.x"));
     }
 
     #[test]
