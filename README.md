@@ -71,17 +71,17 @@ glue.
 Try it yourself with `mise run bench`.
 
 ```txt
-Benchmarking stdin formatting over 3 CMake files from support/bench-fixtures.
-Set BENCH_SOURCE_DIR, BENCH_FILE_LIMIT, BENCH_RUNS, or BENCH_WARMUP to adjust rounds.
+Benchmarking stdin formatting over 120 CMake files from support/bench-fixtures.
+Set BENCH_REPEAT_COUNT, BENCH_FILE_LIMIT, BENCH_RUNS, or BENCH_WARMUP to adjust rounds.
 Benchmark 1: native cmakefmt
-  Time (mean ± σ):      62.7 ms ±   5.4 ms    [User: 24.7 ms, System: 39.1 ms]
-  Range (min … max):    56.9 ms …  67.7 ms    3 runs
+  Time (mean ± σ):      1.871 s ±  0.003 s    [User: 0.810 s, System: 1.147 s]
+  Range (min … max):    1.869 s …  1.875 s    4 runs
 
 Benchmark 2: dprint wasm plugin
-  Time (mean ± σ):      43.8 ms ±   2.2 ms    [User: 16.2 ms, System: 21.6 ms]
-  Range (min … max):    42.0 ms …  46.3 ms    3 runs
+  Time (mean ± σ):      1.257 s ±  0.005 s    [User: 0.522 s, System: 0.633 s]
+  Range (min … max):    1.250 s …  1.262 s    4 runs
 
 Summary
   dprint wasm plugin ran
-    1.43 ± 0.14 times faster than native cmakefmt
+    1.49 ± 0.01 times faster than native cmakefmt
 ```

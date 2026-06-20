@@ -10,9 +10,10 @@ cmakefmt_manifest="$PWD/third_party/cmakefmt-rust-1.6.0/Cargo.toml"
 cmakefmt_native="$PWD/third_party/cmakefmt-rust-1.6.0/target/release/cmakefmt"
 
 file_limit="${BENCH_FILE_LIMIT:-all}"
-warmup="${BENCH_WARMUP:-1}"
-runs="${BENCH_RUNS:-3}"
-source_dir="${BENCH_SOURCE_DIR:-support/bench-fixtures}"
+repeat_count="${BENCH_REPEAT_COUNT:-40}"
+warmup="${BENCH_WARMUP:-2}"
+runs="${BENCH_RUNS:-4}"
+source_dir="support/bench-fixtures"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
@@ -26,27 +27,17 @@ find "$source_dir" -type f \
   \( -name 'CMakeLists.txt' -o -name 'CMakeLists.txt.in' -o -name '*.cmake' \) \
   | sort > "$file_list"
 
-if [[ ! -s "$file_list" ]]; then
-  fixture_dir="$tmp_dir/fixtures"
-  mkdir -p "$fixture_dir"
-  generated_count="${BENCH_GENERATED_FILE_COUNT:-100}"
-  for index in $(seq 1 "$generated_count"); do
-    cat > "$fixture_dir/CMakeLists-$index.txt" <<CMAKE
-cmake_minimum_required(VERSION 3.24)
-project(Bench$index)
-add_executable(bench_$index src/main.cpp src/util.cpp src/platform.cpp)
-target_link_libraries(bench_$index PRIVATE alpha beta gamma delta epsilon zeta)
-CMAKE
-  done
-  find "$fixture_dir" -type f | sort > "$file_list"
-fi
-
 if [[ "$file_limit" != "all" ]]; then
   limited_file_list="$tmp_dir/files.limited.txt"
   head -n "$file_limit" "$file_list" > "$limited_file_list"
   file_list="$limited_file_list"
 fi
 
+repeated_file_list="$tmp_dir/files.repeated.txt"
+for _ in $(seq 1 "$repeat_count"); do
+  cat "$file_list" >> "$repeated_file_list"
+done
+file_list="$repeated_file_list"
 file_count="$(wc -l < "$file_list" | tr -d ' ')"
 
 cat > "$config_path" <<JSON
@@ -65,7 +56,7 @@ native_command='while IFS= read -r file; do "$DPRINT_BENCH_CMAKEFMT" < "$file" >
 dprint_command='while IFS= read -r file; do "$DPRINT_BENCH_DPRINT" fmt --stdin "$file" --config "$DPRINT_BENCH_CONFIG" --config-discovery=false < "$file" > /dev/null; done < "$DPRINT_BENCH_FILE_LIST"'
 
 echo "Benchmarking stdin formatting over $file_count CMake files from $source_dir."
-echo "Set BENCH_SOURCE_DIR, BENCH_FILE_LIMIT, BENCH_RUNS, or BENCH_WARMUP to adjust rounds."
+echo "Set BENCH_REPEAT_COUNT, BENCH_FILE_LIMIT, BENCH_RUNS, or BENCH_WARMUP to adjust rounds."
 
 hyperfine \
   --warmup "$warmup" \

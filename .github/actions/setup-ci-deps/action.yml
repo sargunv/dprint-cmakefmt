@@ -19,6 +19,6 @@ runs:
         cache_key_prefix: mise-v1
         install: true
 
-    - name: Install Rust Wasm target
+    - name: Install Rust components
       shell: bash
-      run: rustup target add wasm32-unknown-unknown
+      run: rustup component add rustfmt clippy && rustup target add wasm32-unknown-unknown
