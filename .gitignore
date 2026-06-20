@@ -1,3 +1,4 @@
+.DS_Store
 /target/
 /.mise.local.toml
 /third_party/

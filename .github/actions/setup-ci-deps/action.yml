@@ -1,0 +1,24 @@
+name: Setup CI deps
+description: Install mise toolchain and cache project dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: Cache cmakefmt source
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      with:
+        path: |
+          third_party/cache
+          third_party/cmakefmt-rust-1.6.0
+        key: cmakefmt-rust-1.6.0-v1-${{ hashFiles('scripts/fetch_cmakefmt.sh', 'support/patches/*.patch') }}
+
+    - name: Install mise toolchain
+      uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+      with:
+        cache: true
+        cache_key_prefix: mise-v1
+        install: true
+
+    - name: Install Rust Wasm target
+      shell: bash
+      run: rustup target add wasm32-unknown-unknown

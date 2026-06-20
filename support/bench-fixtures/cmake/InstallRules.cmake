@@ -1,0 +1,21 @@
+include(GNUInstallDirs)
+
+install(
+  TARGETS bench_core
+  EXPORT DprintCMakeFmtBenchTargets
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+)
+
+install(
+  DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  FILES_MATCHING PATTERN "*.h"
+)
+
+install(
+  EXPORT DprintCMakeFmtBenchTargets
+  NAMESPACE DprintCMakeFmtBench::
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/DprintCMakeFmtBench"
+)

@@ -3,6 +3,14 @@ experimental = true
 pin = true
 install_before = "3d"
 lockfile = true
+lockfile_platforms = [
+  "linux-x64",
+  "linux-x64-musl",
+  "linux-arm64",
+  "linux-arm64-musl",
+  "macos-arm64",
+  "windows-x64",
+]
 
 [tools]
 "aqua:jdx/hk" = "1.48.0"
@@ -23,21 +31,30 @@ outputs = ["third_party/cmakefmt-rust-1.6.0/src/lib.rs"]
 run = "scripts/fetch_cmakefmt.sh"
 
 [tasks.check]
+description = "Run repository checks through hk."
 run = "hk check --all"
 
 [tasks.fix]
+description = "Run repository auto-fixes through hk."
 run = "hk fix --all"
 
 [tasks.build-wasm]
+description = "Build the release dprint plugin Wasm."
 run = "cargo build --release --target wasm32-unknown-unknown"
 
 [tasks.validate-wasm]
+description = "Build and validate the release dprint plugin Wasm."
 depends = ["build-wasm"]
 run = "wasm-tools validate target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
 
 [tasks.test]
+description = "Run dprint plugin integration tests."
 depends = ["validate-wasm"]
 run = "bats tests"
+
+[tasks.hygiene]
+description = "Validate mise tasks and run repository checks."
+run = "mise tasks validate && hk check --all"
 
 [hooks]
 postinstall = ["hk install --mise"]
