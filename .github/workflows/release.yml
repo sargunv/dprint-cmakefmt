@@ -52,11 +52,16 @@ jobs:
       - uses: ./.github/actions/setup-ci-deps
       - run: mise run validate
 
+      - name: Prepare release assets
+        run: |
+          mkdir -p dist
+          cp target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm dist/plugin.wasm
+
       - name: Upload plugin Wasm
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dprint-cmakefmt-wasm
-          path: target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm
+          path: dist/plugin.wasm
           if-no-files-found: error
 
   publish:
@@ -80,4 +85,6 @@ jobs:
       - name: Publish GitHub release
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
-          files: dist/dprint_cmakefmt.wasm
+          files: |
+            dist/plugin.wasm
+            schema.json

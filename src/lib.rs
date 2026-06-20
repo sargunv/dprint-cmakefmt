@@ -261,13 +261,19 @@ impl SyncPluginHandler<ResolvedConfig> for CMakeFmtPlugin {
     }
 
     fn plugin_info(&mut self) -> PluginInfo {
+        let version = env!("CARGO_PKG_VERSION");
+
         PluginInfo {
             name: env!("CARGO_PKG_NAME").to_string(),
-            version: env!("CARGO_PKG_VERSION").to_string(),
+            version: version.to_string(),
             config_key: "cmakefmt".to_string(),
             help_url: env!("CARGO_PKG_REPOSITORY").to_string(),
-            config_schema_url: String::new(),
-            update_url: None,
+            config_schema_url: format!(
+                "https://plugins.dprint.dev/sargunv/dprint-cmakefmt/{version}/schema.json"
+            ),
+            update_url: Some(
+                "https://plugins.dprint.dev/sargunv/dprint-cmakefmt/latest.json".to_string(),
+            ),
         }
     }
 
@@ -406,6 +412,17 @@ mod tests {
         assert_eq!(info.name, "dprint-cmakefmt");
         assert_eq!(info.config_key, "cmakefmt");
         assert_eq!(info.version, env!("CARGO_PKG_VERSION"));
+        assert_eq!(
+            info.config_schema_url,
+            format!(
+                "https://plugins.dprint.dev/sargunv/dprint-cmakefmt/{}/schema.json",
+                env!("CARGO_PKG_VERSION")
+            )
+        );
+        assert_eq!(
+            info.update_url.as_deref(),
+            Some("https://plugins.dprint.dev/sargunv/dprint-cmakefmt/latest.json")
+        );
     }
 
     #[test]

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dprint cmakefmt plugin configuration",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "cmakefmt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lineWidth": { "type": "integer", "minimum": 0 },
+        "indentWidth": { "type": "integer", "minimum": 0 },
+        "useTabs": { "type": "boolean" },
+        "newLineKind": { "type": "string", "enum": ["auto", "lf", "crlf"] },
+        "commandCase": {
+          "type": "string",
+          "enum": ["lower", "upper", "unchanged"]
+        },
+        "keywordCase": {
+          "type": "string",
+          "enum": ["lower", "upper", "unchanged"]
+        },
+        "maxEmptyLines": { "type": "integer", "minimum": 0 },
+        "maxLinesHwrap": { "type": "integer", "minimum": 0 },
+        "maxHangingWrapPositionalArgs": { "type": "integer", "minimum": 0 },
+        "maxHangingWrapGroups": { "type": "integer", "minimum": 0 },
+        "maxRowsCmdline": { "type": "integer", "minimum": 0 },
+        "requireValidLayout": { "type": "boolean" },
+        "wrapAfterFirstArg": { "type": "boolean" },
+        "continuationAlign": {
+          "type": "string",
+          "enum": ["same-indent", "under-first-value"]
+        },
+        "enableSort": { "type": "boolean" },
+        "autosort": { "type": "boolean" },
+        "dangleParens": { "type": "boolean" },
+        "dangleAlign": {
+          "type": "string",
+          "enum": ["prefix", "open", "close"]
+        },
+        "enableMarkup": { "type": "boolean" },
+        "firstCommentIsLiteral": { "type": "boolean" }
+      }
+    }
+  }
+}
