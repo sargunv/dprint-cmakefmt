@@ -4,6 +4,7 @@
   "indentWidth": 2,
   "useTabs": false,
   "newLineKind": "lf",
+  "excludes": ["vendor/**"],
   "json": { "preferSingleLine": true },
   "markdown": { "textWrap": "always" },
   "exec": {

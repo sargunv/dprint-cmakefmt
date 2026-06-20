@@ -1,0 +1,11 @@
+{
+  "$schema": "https://dprint.dev/schemas/v0.json",
+  "lineWidth": 80,
+  "indentWidth": 2,
+  "useTabs": false,
+  "includes": ["**/CMakeLists.txt", "**/*.cmake"],
+  "cmakefmt": {},
+  "plugins": [
+    "../../target/wasm32-unknown-unknown/release/dprint_cmakefmt.wasm"
+  ]
+}
